@@ -9,6 +9,7 @@ using InfernumMode.Assets.ExtraTextures;
 using InfernumMode.Common.Graphics.Particles;
 using InfernumMode.Common.Graphics.Primitives;
 using InfernumMode.Common.Graphics.ScreenEffects;
+using InfernumMode.Core;
 using InfernumMode.Core.GlobalInstances.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,13 +90,14 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             Player closestPlayer = Main.player[Player.FindClosest(Projectile.Center, 1, 1)];
             if (Main.myPlayer == closestPlayer.whoAmI)
             {
-                for (int i = 0; i < (ScreenEffectSystem.AnyBlurOrFlashActive() ? 30 : 8); i++)
+                bool reduced = InfernumConfig.Instance.ReducedGraphicsConfig;
+                for (int i = 0; i < (ScreenEffectSystem.AnyBlurOrFlashActive() ? (reduced ? 3 : 30) : (reduced ? 1 : 8)); i++)
                 {
                     Vector2 smokeVelocity = -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(1f, 4f);
 
                     // Make the smoke rise if a flash or blur is happening.
                     if (ScreenEffectSystem.AnyBlurOrFlashActive())
-                        smokeVelocity *= 3f;
+                        smokeVelocity *= reduced ? 2f : 3f;
 
                     Vector2 smokeSpawnPosition = new(closestPlayer.Center.X + Main.rand.NextFloatDirection() * 1200f, Projectile.Top.Y + Main.rand.NextFloatDirection() * 15f + 35f);
                     CloudParticle smoke = new(smokeSpawnPosition, smokeVelocity, ProvidenceBehaviorOverride.IsEnraged ? Color.Cyan : Color.Orange, Color.DarkGray, 26, 0.8f, true);

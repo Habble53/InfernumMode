@@ -15,7 +15,7 @@ namespace InfernumMode.Core.GlobalInstances.Systems
         public override void PreUpdateEntities()
         {
             float minBlackFade = 0f;
-            if (Main.LocalPlayer.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 3200f))
+            if (Main.LocalPlayer.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 2400f))
                 minBlackFade = 0.25f;
 
             InfernumMode.BlackFade = Clamp(InfernumMode.BlackFade - 0.01f, minBlackFade, 1f);

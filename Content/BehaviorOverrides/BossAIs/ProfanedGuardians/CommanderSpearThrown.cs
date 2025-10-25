@@ -5,6 +5,7 @@ using InfernumMode.Common.Graphics.Metaballs;
 using InfernumMode.Common.Graphics.ScreenEffects;
 using InfernumMode.Content.BehaviorOverrides.BossAIs.Providence;
 using InfernumMode.Content.Projectiles.Wayfinder;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -65,12 +66,15 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
             if (Projectile.velocity.Length() < 36f)
                 Projectile.velocity *= 1.05f;
 
-            for (int i = 0; i < 40; i++)
+            if (!InfernumConfig.Instance.ReducedGraphicsConfig)
             {
-                // Bias towards lower values. 
-                float size = Pow(Main.rand.NextFloat(), 2f);
-                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(Projectile.Center - (Projectile.velocity * 0.5f) + (Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) * size),
-                    Vector2.Zero, Main.rand.NextFloat(10f, 15f), 0.9f);
+                for (int i = 0; i < 40; i++)
+                {
+                    // Bias towards lower values. 
+                    float size = Pow(Main.rand.NextFloat(), 2f);
+                    ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(Projectile.Center - (Projectile.velocity * 0.5f) + (Main.rand.NextVector2Circular(Projectile.width * 0.5f, Projectile.height * 0.5f) * size),
+                        Vector2.Zero, Main.rand.NextFloat(10f, 15f), 0.9f);
+                }
             }
 
             Lighting.AddLight(Projectile.Center, Vector3.One);
@@ -96,8 +100,11 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
 
             GuardianComboAttackManager.CreateFireExplosion(Projectile.Center, true);
 
-            for (int i = 0; i < 100; i++)
-                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(Projectile.Center + Main.rand.NextVector2Circular(100f, 100f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+            if (!InfernumConfig.Instance.ReducedGraphicsConfig)
+            {
+                for (int i = 0; i < 100; i++)
+                    ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(Projectile.Center + Main.rand.NextVector2Circular(100f, 100f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+            }
 
             if (Main.netMode == NetmodeID.MultiplayerClient)
                 return;

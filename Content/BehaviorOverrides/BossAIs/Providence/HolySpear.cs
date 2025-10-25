@@ -3,6 +3,7 @@ using System.Linq;
 using InfernumMode.Assets.Sounds;
 using InfernumMode.Common.Graphics.Metaballs;
 using InfernumMode.Common.Graphics.ScreenEffects;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -181,7 +182,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
         public override void OnKill(int timeLeft)
         {
             // Burst into lava metaballs on death.
-            if (Main.netMode != NetmodeID.Server)
+            if (Main.netMode != NetmodeID.Server && !InfernumConfig.Instance.ReducedGraphicsConfig)
                 ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(ModContent.Request<Texture2D>(Texture).Value.CreateMetaballsFromTexture(Projectile.Center, Projectile.rotation, Projectile.scale, 20f, 30));
         }
 

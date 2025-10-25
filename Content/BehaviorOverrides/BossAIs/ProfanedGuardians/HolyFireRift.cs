@@ -2,6 +2,7 @@
 using InfernumMode.Assets.ExtraTextures;
 using InfernumMode.Common.Graphics.Metaballs;
 using InfernumMode.Content.Projectiles.Wayfinder;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -81,7 +82,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
             }
 
             // Spawn a bunch of metaballs.
-            if (SpearRift)
+            if (SpearRift && !InfernumConfig.Instance.ReducedGraphicsConfig)
             {
                 for (int i = 0; i < 3; i++)
                     ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(Projectile.Center +

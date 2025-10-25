@@ -5,6 +5,7 @@ using InfernumMode.Assets.ExtraTextures;
 using InfernumMode.Assets.Sounds;
 using InfernumMode.Common.Graphics.Interfaces;
 using InfernumMode.Common.Graphics.ScreenEffects;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -127,14 +128,17 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                     Gore.NewGore(Projectile.GetSource_Death(), crystalSpawnPosition, crystalVelocity, Mod.Find<ModGore>($"ProvidenceDoor{Main.rand.Next(1, 3)}").Type, 0.4f);
             }
 
-            for (float k = 0; k < CurrentLength; k += Main.rand.NextFloat(9f, 16f))
+            if (!(Main.netMode == NetmodeID.SinglePlayer && InfernumConfig.Instance.ReducedGraphicsConfig))
             {
-                Vector2 crystalShardSpawnPosition = Projectile.Center + Projectile.velocity * k + Main.rand.NextVector2Circular(6f, 6f);
-                Vector2 shardVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3.6f, 13.6f);
-                Dust shard = Dust.NewDustPerfect(crystalShardSpawnPosition, 255, shardVelocity);
-                shard.noGravity = Main.rand.NextBool();
-                shard.scale = Main.rand.NextFloat(1.3f, 1.925f);
-                shard.velocity.Y -= 5f;
+                for (float k = 0; k < CurrentLength; k += Main.rand.NextFloat(9f, 16f))
+                {
+                    Vector2 crystalShardSpawnPosition = Projectile.Center + Projectile.velocity * k + Main.rand.NextVector2Circular(6f, 6f);
+                    Vector2 shardVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(3.6f, 13.6f);
+                    Dust shard = Dust.NewDustPerfect(crystalShardSpawnPosition, 255, shardVelocity);
+                    shard.noGravity = Main.rand.NextBool();
+                    shard.scale = Main.rand.NextFloat(1.3f, 1.925f);
+                    shard.velocity.Y -= 5f;
+                }
             }
         }
 

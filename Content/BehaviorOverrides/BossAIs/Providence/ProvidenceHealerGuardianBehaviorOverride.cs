@@ -3,6 +3,7 @@ using CalamityMod.NPCs;
 using CalamityMod.NPCs.Providence;
 using InfernumMode.Common.Graphics;
 using InfernumMode.Common.Graphics.Metaballs;
+using InfernumMode.Core;
 using InfernumMode.Core.OverridingSystem;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -70,9 +71,12 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             // Release some small lava particles if there's some rotational velocity. This only happens during the idle spin state.
             if (offsetAngle + previousAngularOffset != previousAngularOffset && attackState == HealerGuardianAttackState.SpinInPlace)
             {
-                Vector2 particleSpawnOffset = Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * Pow(Main.rand.NextFloat(), 2f);
-                float particleScale = Main.rand.NextFloat(20f, 35f);
-                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center + particleSpawnOffset, Vector2.Zero, particleScale);
+                if (!InfernumConfig.Instance.ReducedGraphicsConfig)
+                {
+                    Vector2 particleSpawnOffset = Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * Pow(Main.rand.NextFloat(), 2f);
+                    float particleScale = Main.rand.NextFloat(20f, 35f);
+                    ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center + particleSpawnOffset, Vector2.Zero, particleScale);
+                }
 
                 previousAngularOffset = offsetAngle + proviSpinAngularOffset;
             }

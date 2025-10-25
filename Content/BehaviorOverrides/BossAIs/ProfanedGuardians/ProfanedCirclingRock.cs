@@ -5,6 +5,7 @@ using InfernumMode.Assets.ExtraTextures;
 using InfernumMode.Assets.Sounds;
 using InfernumMode.Common.Graphics.Metaballs;
 using InfernumMode.Content.Projectiles.Wayfinder;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -95,7 +96,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                     Color.SandyBrown, Main.rand.NextFloat(0.45f, 0.75f), 30);
                 GeneralParticleHandler.SpawnParticle(rockParticle);
                 Projectile.rotation -= 0.1f;
-                if (Main.rand.NextBool() && Main.netMode != NetmodeID.Server)
+                if (Main.rand.NextBool() && Main.netMode != NetmodeID.Server && !InfernumConfig.Instance.ReducedGraphicsConfig)
                     ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(ModContent.Request<Texture2D>(Texture).Value.CreateMetaballsFromTexture(Projectile.Center - Projectile.velocity * 0.5f, 0f, Projectile.scale * 0.8f, 15f, 170));
             }
         }

@@ -1,8 +1,9 @@
-﻿using System.IO;
-using CalamityMod.Particles;
+﻿using CalamityMod.Particles;
 using InfernumMode.Common.Graphics.ScreenEffects;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -55,7 +56,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.AdultEidolonWyrm
             Projectile.rotation = Projectile.velocity.ToRotation() - PiOver2;
 
             // Release magic particles if close to invisible.
-            if (Projectile.Opacity < 0.85f && Main.rand.NextFloat() < 1f - Projectile.Opacity)
+            if (Projectile.Opacity < 0.85f && Main.rand.NextFloat() < 1f - Projectile.Opacity && !(Main.netMode == NetmodeID.SinglePlayer && InfernumConfig.Instance.ReducedGraphicsConfig))
             {
                 Color magicColor = Color.Lerp(Color.Blue, Color.Yellow, Main.rand.NextFloat(0.8f));
                 Vector2 magicVelocity = Main.rand.NextVector2Circular(2f, 2f) * (1f - Projectile.Opacity);

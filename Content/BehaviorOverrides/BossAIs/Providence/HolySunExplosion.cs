@@ -3,6 +3,7 @@ using System.IO;
 using CalamityMod;
 using InfernumMode.Assets.Effects;
 using InfernumMode.Common.Graphics.Primitives;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -19,6 +20,8 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
         public ref float Time => ref Projectile.ai[0];
 
         public ref float Radius => ref Projectile.ai[1];
+
+        public float IntensityFactor = InfernumConfig.Instance.ReducedGraphicsConfig ? 0.5f : 1f;
 
         public override string Texture => "CalamityMod/Projectiles/InvisibleProj";
 

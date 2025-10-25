@@ -263,14 +263,16 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.MoonLord
                     // Release a spread of bolts. They do not fire if the target is close to the eye.
                     if (!target.WithinRange(npc.Center, 270f))
                     {
-                        float middleRingAngularOffset = Main.rand.NextFloat(TwoPi);
-                        for (int i = 0; i < 42; i++)
+                        float middleRingAngularOffset = Main.rand.NextFloat(Pi / 21f);
+                        for (int i = 0; i < 20; i++)
                         {
-                            Vector2 boltVelocity = npc.SafeDirectionTo(target.Center).RotatedBy(TwoPi * i / 42f) * 5.5f;
-                            Vector2 middleBoltVelocity = npc.SafeDirectionTo(target.Center).RotatedBy(TwoPi * i / 42f + middleRingAngularOffset) * 3.69f;
+                            Vector2 boltVelocity = npc.SafeDirectionTo(target.Center).RotatedBy(TwoPi * i / 42f + TwoPi * 3f / 4f) * 5.5f;
+                            Vector2 middleBoltVelocity = npc.SafeDirectionTo(target.Center).RotatedBy(Pi * i / 42f + middleRingAngularOffset + TwoPi * 3f / 4f) * 3.69f;
                             Utilities.NewProjectileBetter(pupilPosition, boltVelocity, ProjectileID.PhantasmalBolt, PhantasmalBoltDamage, 0f);
                             Utilities.NewProjectileBetter(pupilPosition, middleBoltVelocity, ProjectileID.PhantasmalBolt, PhantasmalBoltDamage, 0f);
                         }
+                        Vector2 lastBoltVelocity = npc.SafeDirectionTo(target.Center).RotatedBy(Pi * 20f / 42f + TwoPi * 7f / 8f) * 5.5f;
+                        Utilities.NewProjectileBetter(pupilPosition, lastBoltVelocity, ProjectileID.PhantasmalBolt, PhantasmalBoltDamage, 0f);
                     }
 
                     for (int i = 0; i < 10; i++)

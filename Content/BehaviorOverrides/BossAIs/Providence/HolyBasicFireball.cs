@@ -4,6 +4,7 @@ using CalamityMod.NPCs;
 using CalamityMod.NPCs.Providence;
 using CalamityMod.Particles;
 using InfernumMode.Common.Graphics.Particles;
+using InfernumMode.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
@@ -53,7 +54,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                 Projectile.Kill();
 
             // Release fire particles.
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < (InfernumConfig.Instance.ReducedGraphicsConfig ? 2 : 3); i++)
             {
                 Color fireColor = Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat(0.2f, 0.4f));
                 if (ProvidenceBehaviorOverride.IsEnraged && CalamityGlobalNPC.holyBoss != -1)
@@ -124,6 +125,9 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 
             Projectile.ExpandHitboxBy(50);
+            if (InfernumConfig.Instance.ReducedGraphicsConfig)
+                return;
+
             int dustType = ProvUtils.GetDustID(Variant);
             if (ProvidenceBehaviorOverride.IsEnraged)
                 dustType = 187;

@@ -58,7 +58,7 @@ namespace InfernumMode.Content.Items.Misc
 
             if (line.Text.StartsWith("Maybe you"))
             {
-                if (Main.LocalPlayer.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 3200f))
+                if (Main.LocalPlayer.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 2400f))
                 {
                     drawOffset.X += SakuraBloom.DrawLine(line, drawOffset, WaterSparkles, Utilities.GetLocalization("Items.SakuraBud.TooltipEffect.FourthText").Value);
                     drawOffset.X += SakuraBloom.DrawLine(line, drawOffset, WaterSparkles, Utilities.GetLocalization("Items.SakuraBud.TooltipEffect.FifthText").Value, true, overrideColor: new(26, 169, 208));
@@ -74,7 +74,7 @@ namespace InfernumMode.Content.Items.Misc
 
         public override void Update(ref float gravity, ref float maxFallSpeed)
         {
-            bool inSpecialGarden = Item.position.Distance(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates()) <= 3200f && WorldSaveSystem.BlossomGardenCenter != Point.Zero;
+            bool inSpecialGarden = Item.position.Distance(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates()) <= 2400f && WorldSaveSystem.BlossomGardenCenter != Point.Zero;
             if (inSpecialGarden && Collision.WetCollision(Item.TopLeft, Item.width, Item.height))
             {
                 // Create bubbles and magic.

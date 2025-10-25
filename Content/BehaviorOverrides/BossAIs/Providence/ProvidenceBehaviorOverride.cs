@@ -19,6 +19,7 @@ using InfernumMode.Content.BehaviorOverrides.BossAIs.Yharon;
 using InfernumMode.Content.Cutscenes;
 using InfernumMode.Content.Projectiles.Pets;
 using InfernumMode.Content.Projectiles.Wayfinder;
+using InfernumMode.Core;
 using InfernumMode.Core.GlobalInstances;
 using InfernumMode.Core.GlobalInstances.Players;
 using InfernumMode.Core.GlobalInstances.Systems;
@@ -229,6 +230,14 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
         public static bool IsEnraged => !Main.dayTime || BossRushEvent.BossRushActive;
 
         public static bool SyncAttacksWithMusic => false;//Main.netMode == NetmodeID.SinglePlayer && InfernumMode.CalMusicModIsActive && Main.musicVolume > 0f && !BossRushEvent.BossRushActive;
+
+        public static bool ReducedGraphics
+        {
+            get
+            {
+                return InfernumConfig.Instance.ReducedGraphicsConfig;
+            }
+        }
 
         public static readonly Color[] NightPalette =
         [
@@ -696,7 +705,8 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             {
                 if (deathEffectTimer >= 340f && deathEffectTimer % 10f == 1f)
                 {
-                    GeneralParticleHandler.SpawnParticle(new BurstParticle(npc.Center, Vector2.Zero, DoGPostProviCutscene.TimeColor, 36, true));
+                    if (!ReducedGraphics)
+                        GeneralParticleHandler.SpawnParticle(new BurstParticle(npc.Center, Vector2.Zero, DoGPostProviCutscene.TimeColor, 36, true));
                     ScreenEffectSystem.SetBlurEffect(npc.Center, 1f, 30);
                     ScreenEffectSystem.SetFlashEffect(npc.Center, 1.3f, 30);
                     target.Infernum_Camera().CurrentScreenShakePower = 10f;
@@ -835,8 +845,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             // Become fully opaque.
             npc.Opacity = 1f;
             burnIntensity = Pow(Utils.GetLerpValue(90f, 0f, localAttackTimer, true), 0.12f) * 0.96f;
-
-            npc.Calamity().DR = 0.90f;
 
             if (localAttackTimer <= 5f)
                 performedEndEffects = 0f;
@@ -986,11 +994,14 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                 Main.LocalPlayer.Infernum_Camera().CurrentScreenShakePower = 7.5f;
                 ScreenEffectSystem.SetFlashEffect(npc.Center, 1.2f, 35);
 
-                for (int i = 0; i < 32; i++)
+                if (!ReducedGraphics)
                 {
-                    Color fireColor = Main.rand.NextBool() ? Color.Yellow : Color.Orange;
-                    CloudParticle fireCloud = new(npc.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
-                    GeneralParticleHandler.SpawnParticle(fireCloud);
+                    for (int i = 0; i < 32; i++)
+                    {
+                        Color fireColor = IsEnraged ? (Main.rand.NextBool() ? Color.Turquoise : Color.SkyBlue) : (Main.rand.NextBool() ? Color.Yellow : Color.Orange);
+                        CloudParticle fireCloud = new(npc.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
+                        GeneralParticleHandler.SpawnParticle(fireCloud);
+                    }
                 }
 
                 SoundEngine.PlaySound(InfernumSoundRegistry.ProvidenceHolyBlastShootSound, npc.Center);
@@ -1194,12 +1205,15 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                     float spawnOffsetAngle = Lerp(-1f, 1f, i / (float)(guardianCount - 1f)) * PiOver4;
                     Color ashColor = IsEnraged ? Color.Turquoise : new Color(255, 191, 73);
                     Vector2 guardianSpawnPosition = npc.Center - Vector2.UnitY.RotatedBy(spawnOffsetAngle) * spawnOffsetRadius;
-                    for (int j = 0; j < 67; j++)
+                    if (!ReducedGraphics)
                     {
-                        Vector2 ashSpawnPosition = guardianSpawnPosition + Main.rand.NextVector2Circular(100f, 100f);
-                        Vector2 ashVelocity = npc.SafeDirectionTo(ashSpawnPosition) * Main.rand.NextFloat(1.5f, 2f);
-                        var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, ashColor, Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
-                        GeneralParticleHandler.SpawnParticle(ash);
+                        for (int j = 0; j < 67; j++)
+                        {
+                            Vector2 ashSpawnPosition = guardianSpawnPosition + Main.rand.NextVector2Circular(100f, 100f);
+                            Vector2 ashVelocity = npc.SafeDirectionTo(ashSpawnPosition) * Main.rand.NextFloat(1.5f, 2f);
+                            var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, ashColor, Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
+                            GeneralParticleHandler.SpawnParticle(ash);
+                        }
                     }
 
                     if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -1260,7 +1274,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                         for (int i = 0; i < Main.maxNPCs; i++)
                         {
                             NPC n = Main.npc[i];
-                            if (n.active && n.type == guardianID)
+                            if (n.active && n.type == guardianID && !ReducedGraphics)
                             {
                                 for (int j = 0; j < 4; j++)
                                 {
@@ -1291,11 +1305,14 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                             if (spear.velocity.Length() >= 1f)
                                 continue;
 
-                            for (int i = 0; i < 32; i++)
+                            if (!ReducedGraphics)
                             {
-                                Color fireColor = Main.rand.NextBool() ? Color.Yellow : Color.Orange;
-                                CloudParticle fireCloud = new(spear.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
-                                GeneralParticleHandler.SpawnParticle(fireCloud);
+                                for (int i = 0; i < 32; i++)
+                                {
+                                    Color fireColor = IsEnraged ? (Main.rand.NextBool() ? Color.Turquoise : Color.SkyBlue) : (Main.rand.NextBool() ? Color.Yellow : Color.Orange);
+                                    CloudParticle fireCloud = new(spear.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
+                                    GeneralParticleHandler.SpawnParticle(fireCloud);
+                                }
                             }
 
                             spear.velocity = spear.SafeDirectionTo(target.Center) * spearShootSpeed;
@@ -1386,12 +1403,15 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                     float spawnOffsetAngle = TwoPi * i / guardianCount + PiOver4;
                     Color ashColor = IsEnraged ? Color.Turquoise : new Color(255, 191, 73);
                     Vector2 guardianSpawnPosition = npc.Center - Vector2.UnitY.RotatedBy(spawnOffsetAngle) * spawnOffsetRadius;
-                    for (int j = 0; j < 60; j++)
+                    if (!ReducedGraphics)
                     {
-                        Vector2 ashSpawnPosition = guardianSpawnPosition + Main.rand.NextVector2Circular(100f, 100f);
-                        Vector2 ashVelocity = npc.SafeDirectionTo(ashSpawnPosition) * Main.rand.NextFloat(1.5f, 2f);
-                        var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, ashColor, Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
-                        GeneralParticleHandler.SpawnParticle(ash);
+                        for (int j = 0; j < 60; j++)
+                        {
+                            Vector2 ashSpawnPosition = guardianSpawnPosition + Main.rand.NextVector2Circular(100f, 100f);
+                            Vector2 ashVelocity = npc.SafeDirectionTo(ashSpawnPosition) * Main.rand.NextFloat(1.5f, 2f);
+                            var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, ashColor, Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
+                            GeneralParticleHandler.SpawnParticle(ash);
+                        }
                     }
 
                     if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -1476,12 +1496,15 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                         if (n.type != guardianID || !n.active)
                             continue;
 
-                        for (int j = 0; j < 20; j++)
+                        if (!ReducedGraphics)
                         {
-                            Vector2 ashSpawnPosition = n.Center + Main.rand.NextVector2Circular(100f, 100f);
-                            Vector2 ashVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 2f);
-                            var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, new Color(255, 191, 73), Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
-                            GeneralParticleHandler.SpawnParticle(ash);
+                            for (int j = 0; j < 20; j++)
+                            {
+                                Vector2 ashSpawnPosition = n.Center + Main.rand.NextVector2Circular(100f, 100f);
+                                Vector2 ashVelocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 2f);
+                                var ash = new MediumMistParticle(ashSpawnPosition, ashVelocity, new Color(255, 191, 73), Color.Gray, Main.rand.NextFloat(0.7f, 0.9f), 200f, Main.rand.NextFloat(-0.04f, 0.04f));
+                                GeneralParticleHandler.SpawnParticle(ash);
+                            }
                         }
                         n.active = false;
                     }
@@ -1514,8 +1537,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             float spiralShootSpeed = Lerp(3.5f, 4.5f, attackCompletion);
             float circleShootSpeed = spiralShootSpeed * 1.36f;
             bool canShootCircle = attackCompletion >= 0.5f;
-
-            npc.Calamity().DR = 0.90f;
 
             // Make the attack faster according to life ratio.
             // This may seem unintuitive since it's a "quiet" attack but there's always the possibility that the player won't kill Providence within one
@@ -1644,8 +1665,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
 
             // Stay in the cocoon.
             drawState = (int)ProvidenceFrameDrawingType.CocoonState;
-
-            npc.Calamity().DR = 0.80f;
 
             if (!doneAttacking)
                 bombCreationTimer++;
@@ -1785,11 +1804,14 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
                 Main.LocalPlayer.Infernum_Camera().CurrentScreenShakePower = 7.5f;
                 ScreenEffectSystem.SetFlashEffect(npc.Center, 1.2f, 35);
 
-                for (int i = 0; i < 32; i++)
+                if (!ReducedGraphics)
                 {
-                    Color fireColor = Main.rand.NextBool() ? Color.Yellow : Color.Orange;
-                    CloudParticle fireCloud = new(npc.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
-                    GeneralParticleHandler.SpawnParticle(fireCloud);
+                    for (int i = 0; i < 32; i++)
+                    {
+                        Color fireColor = IsEnraged ? (Main.rand.NextBool() ? Color.Turquoise : Color.SkyBlue) : (Main.rand.NextBool() ? Color.Yellow : Color.Orange);
+                        CloudParticle fireCloud = new(npc.Center, (TwoPi * i / 32f).ToRotationVector2() * 14.5f, fireColor, Color.DarkGray, 45, Main.rand.NextFloat(2.5f, 3.2f));
+                        GeneralParticleHandler.SpawnParticle(fireCloud);
+                    }
                 }
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -1825,7 +1847,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             {
                 drawState = (int)ProvidenceFrameDrawingType.CocoonState;
                 npc.velocity *= 0.85f;
-                npc.Calamity().DR = 0.90f;
             }
             else
                 npc.SimpleFlyMovement(npc.SafeDirectionTo(arenaTopCenter) * 26f, 0.3f);
@@ -1904,8 +1925,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
 
             // Stay in the cocoon during this attack.
             drawState = (int)ProvidenceFrameDrawingType.CocoonState;
-
-            npc.Calamity().DR = 0.90f;
 
             // Slow down.
             npc.velocity.X *= 0.85f;
@@ -2112,16 +2131,19 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             if (localAttackTimer < energyChargeupTime)
             {
                 float chargeUpInterpolant = Utils.GetLerpValue(0f, energyChargeupTime, localAttackTimer, true);
-                for (int i = 0; i < 2; i++)
+                if (!ReducedGraphics)
                 {
-                    if (Main.rand.NextFloat() > chargeUpInterpolant)
-                        continue;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (Main.rand.NextFloat() > chargeUpInterpolant)
+                            continue;
 
-                    Color energyColor = Color.Lerp(Color.Pink, Color.Yellow, Main.rand.NextFloat(0.7f));
-                    Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(116f, 172f);
-                    Vector2 energyVelocity = (npc.Center - energySpawnPosition) * 0.034f;
-                    SquishyLightParticle laserEnergy = new(energySpawnPosition, energyVelocity, 1.5f, energyColor, 36, 1f, 4f);
-                    GeneralParticleHandler.SpawnParticle(laserEnergy);
+                        Color energyColor = Color.Lerp(Color.Pink, Color.Yellow, Main.rand.NextFloat(0.7f));
+                        Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(116f, 172f);
+                        Vector2 energyVelocity = (npc.Center - energySpawnPosition) * 0.034f;
+                        SquishyLightParticle laserEnergy = new(energySpawnPosition, energyVelocity, 1.5f, energyColor, 36, 1f, 4f);
+                        GeneralParticleHandler.SpawnParticle(laserEnergy);
+                    }
                 }
                 npc.velocity = Vector2.Zero;
                 return;
@@ -2224,16 +2246,19 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
             if (localAttackTimer < energyChargeupTime)
             {
                 float chargeUpInterpolant = Utils.GetLerpValue(0f, energyChargeupTime, localAttackTimer, true);
-                for (int i = 0; i < 2; i++)
+                if (!ReducedGraphics)
                 {
-                    if (Main.rand.NextFloat() > chargeUpInterpolant)
-                        continue;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (Main.rand.NextFloat() > chargeUpInterpolant)
+                            continue;
 
-                    Color energyColor = Color.Lerp(Color.Pink, Color.Yellow, Main.rand.NextFloat(0.7f));
-                    Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(116f, 166f);
-                    Vector2 energyVelocity = (npc.Center - energySpawnPosition) * 0.032f;
-                    SquishyLightParticle laserEnergy = new(energySpawnPosition, energyVelocity, 1.5f, energyColor, 32, 1f, 4f);
-                    GeneralParticleHandler.SpawnParticle(laserEnergy);
+                        Color energyColor = Color.Lerp(Color.Pink, Color.Yellow, Main.rand.NextFloat(0.7f));
+                        Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(116f, 166f);
+                        Vector2 energyVelocity = (npc.Center - energySpawnPosition) * 0.032f;
+                        SquishyLightParticle laserEnergy = new(energySpawnPosition, energyVelocity, 1.5f, energyColor, 32, 1f, 4f);
+                        GeneralParticleHandler.SpawnParticle(laserEnergy);
+                    }
                 }
                 npc.velocity = Vector2.Zero;
                 countdownUntilNextLaser = 96f;
@@ -2331,8 +2356,6 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
 
             // Stay in the cocoon during this attack by default.
             drawState = (int)ProvidenceFrameDrawingType.CocoonState;
-
-            npc.Calamity().DR = 0.90f;
 
             // Play a rock reform sound once the shell is about to come back.
             if (localAttackTimer == rockReformDelay)
@@ -2547,7 +2570,7 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
         public static void ReleaseSparkles(Vector2 sparkleSpawnPosition, int sparkleCount, float maxSpraySpeed)
         {
             // Prevent projectiles from spawning client-side.
-            if (Main.netMode == NetmodeID.MultiplayerClient)
+            if (Main.netMode == NetmodeID.MultiplayerClient || (Main.netMode == NetmodeID.SinglePlayer && ReducedGraphics))
                 return;
 
             for (int i = 0; i < sparkleCount; i++)

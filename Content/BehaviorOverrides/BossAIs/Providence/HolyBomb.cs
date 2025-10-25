@@ -4,6 +4,7 @@ using CalamityMod;
 using InfernumMode.Assets.Effects;
 using InfernumMode.Assets.ExtraTextures;
 using InfernumMode.Common.Graphics.Interfaces;
+using InfernumMode.Core;
 using InfernumMode.Core.GlobalInstances.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -130,8 +131,11 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.Providence
 
                 Vector2 drawPosition = Projectile.Center + Vector2.UnitY * Projectile.scale * 18f - Main.screenPosition;
                 Main.spriteBatch.Draw(invisible, drawPosition, null, Color.White, Projectile.rotation, invisible.Size() * 0.5f, scale, 0, 0f);
-                Main.spriteBatch.Draw(invisible, drawPosition, null, Color.White, Projectile.rotation, invisible.Size() * 0.5f, scale * 0.5f, 0, 0f);
-                Main.spriteBatch.Draw(invisible, drawPosition, null, Color.White, Projectile.rotation, invisible.Size() * 0.5f, scale * 0.32f, 0, 0f);
+                if (!InfernumConfig.Instance.ReducedGraphicsConfig)
+                {
+                    Main.spriteBatch.Draw(invisible, drawPosition, null, Color.White, Projectile.rotation, invisible.Size() * 0.5f, scale * 0.5f, 0, 0f);
+                    Main.spriteBatch.Draw(invisible, drawPosition, null, Color.White, Projectile.rotation, invisible.Size() * 0.5f, scale * 0.32f, 0, 0f);
+                }
             }
         }
 

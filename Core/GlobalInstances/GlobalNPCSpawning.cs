@@ -26,7 +26,7 @@ namespace InfernumMode.Core.GlobalInstances
             }
 
             // Make enemies much rarer in the blossom garden.
-            if (player.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 3200f))
+            if (player.WithinRange(WorldSaveSystem.BlossomGardenCenter.ToWorldCoordinates(), 2400f))
             {
                 spawnRate *= 3;
                 maxSpawns /= 3;

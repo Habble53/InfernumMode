@@ -11,6 +11,7 @@ using InfernumMode.Common.Graphics.ScreenEffects;
 using InfernumMode.Content.BehaviorOverrides.BossAIs.Providence;
 using InfernumMode.Content.Projectiles.Pets;
 using InfernumMode.Content.Projectiles.Wayfinder;
+using InfernumMode.Core;
 using InfernumMode.Core.GlobalInstances;
 using InfernumMode.Core.GlobalInstances.Systems;
 using Luminance.Common.Easings;
@@ -1353,19 +1354,22 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                     case 3:
 
                         // Create particles to indicate the sudden speed.
-                        if (Main.rand.NextBool())
+                        if (Main.rand.NextBool() && !InfernumConfig.Instance.ReducedGraphicsConfig)
                         {
                             Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Circular(30f, 20f) - npc.velocity;
                             var energyLeak = new SparkParticle(energySpawnPosition, npc.velocity * 0.3f, false, 30, Main.rand.NextFloat(0.9f, 1.4f), Color.Lerp(WayfinderSymbol.Colors[1], WayfinderSymbol.Colors[2], 0.75f));
                             GeneralParticleHandler.SpawnParticle(energyLeak);
                         }
 
-                        for (int i = 0; i < 30; i++)
+                        if (!InfernumConfig.Instance.ReducedGraphicsConfig)
                         {
-                            // Bias towards lower values. 
-                            float size = Pow(Main.rand.NextFloat(), 2f);
-                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size),
-                                Vector2.Zero, Main.rand.NextFloat(15f, 20f), 0.93f);
+                            for (int i = 0; i < 30; i++)
+                            {
+                                // Bias towards lower values. 
+                                float size = Pow(Main.rand.NextFloat(), 2f);
+                                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size),
+                                    Vector2.Zero, Main.rand.NextFloat(15f, 20f), 0.93f);
+                            }
                         }
 
                         if (npc.WithinRange(defender.Center, 230f) || universalAttackTimer >= 240f)
@@ -1514,18 +1518,21 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                         shieldStatus = (float)DefenderShieldStatus.ActiveAndStatic;
 
                         // Create particles to indicate the sudden speed.
-                        if (Main.rand.NextBool())
+                        if (Main.rand.NextBool() && !InfernumConfig.Instance.ReducedGraphicsConfig)
                         {
                             Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Circular(30f, 20f) - npc.velocity;
                             var energyLeak = new SparkParticle(energySpawnPosition, npc.velocity * 0.3f, false, 30, Main.rand.NextFloat(0.9f, 1.4f), Color.Lerp(WayfinderSymbol.Colors[1], WayfinderSymbol.Colors[2], 0.75f));
                             GeneralParticleHandler.SpawnParticle(energyLeak);
                         }
 
-                        for (int i = 0; i < 30; i++)
+                        if (!InfernumConfig.Instance.ReducedGraphicsConfig)
                         {
-                            float size = Pow(Main.rand.NextFloat(), 2f);
-                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size),
-                                Vector2.Zero, Main.rand.NextFloat(15f, 20f));
+                            for (int i = 0; i < 30; i++)
+                            {
+                                float size = Pow(Main.rand.NextFloat(), 2f);
+                                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size),
+                                    Vector2.Zero, Main.rand.NextFloat(15f, 20f));
+                            }
                         }
                         break;
                 }
@@ -2315,18 +2322,21 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
 
                 case 3:
                     // Create particles to indicate the sudden speed.
-                    if (Main.rand.NextBool())
+                    if (Main.rand.NextBool() && !InfernumConfig.Instance.ReducedGraphicsConfig)
                     {
                         Vector2 energySpawnPosition = npc.Center + Main.rand.NextVector2Circular(30f, 20f) - npc.velocity;
                         var energyLeak = new SparkParticle(energySpawnPosition, npc.velocity * 0.3f, false, 30, Main.rand.NextFloat(0.9f, 1.4f), Color.Lerp(WayfinderSymbol.Colors[1], WayfinderSymbol.Colors[2], 0.75f));
                         GeneralParticleHandler.SpawnParticle(energyLeak);
                     }
 
-                    for (int i = 0; i < 50; i++)
+                    if (!InfernumConfig.Instance.ReducedGraphicsConfig)
                     {
-                        // Bias towards lower values. 
-                        float size = Pow(Main.rand.NextFloat(), 2f);
-                        ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size), Vector2.Zero, Main.rand.NextFloat(25f, 35f));
+                        for (int i = 0; i < 50; i++)
+                        {
+                            // Bias towards lower values. 
+                            float size = Pow(Main.rand.NextFloat(), 2f);
+                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center - (npc.velocity * 0.5f) + (Main.rand.NextVector2Circular(npc.width * 0.5f, npc.height * 0.5f) * size), Vector2.Zero, Main.rand.NextFloat(25f, 35f));
+                        }
                     }
 
                     drawDashTelegraph = 0f;
@@ -2358,33 +2368,36 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                         npc.velocity = -npc.velocity.SafeNormalize(Vector2.UnitY) * 4.6f;
                         Vector2 impactCenter = npc.Center + new Vector2(0f, 55f);
 
-                        for (int j = 0; j < 40; j++)
+                        if (!InfernumConfig.Instance.ReducedGraphicsConfig)
                         {
-                            var rock = new ProfanedRockParticle(impactCenter, -Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(6f, 9f), Color.White, Main.rand.NextFloat(0.85f, 1.15f), 60, Main.rand.NextFloat(0f, 0.2f));
-                            GeneralParticleHandler.SpawnParticle(rock);
+                            for (int j = 0; j < 40; j++)
+                            {
+                                var rock = new ProfanedRockParticle(impactCenter, -Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(6f, 9f), Color.White, Main.rand.NextFloat(0.85f, 1.15f), 60, Main.rand.NextFloat(0f, 0.2f));
+                                GeneralParticleHandler.SpawnParticle(rock);
+                            }
+
+                            // Spawn a bunch of light particles.
+                            for (int i = 0; i < 20; i++)
+                            {
+                                Vector2 position = impactCenter + Main.rand.NextVector2Circular(20f, 20f);
+                                var light = new GlowyLightParticle(position, impactCenter.DirectionTo(position) * Main.rand.NextFloat(3f, 5f),
+                                    Main.rand.NextBool() ? WayfinderSymbol.Colors[1] : Color.OrangeRed, 60, Main.rand.NextFloat(0.85f, 1.15f), Main.rand.NextFloat(0.95f, 1.05f), true);
+                                GeneralParticleHandler.SpawnParticle(light);
+                            }
+
+                            // Create a fire explosion.
+                            for (int i = 0; i < 30; i++)
+                            {
+                                MediumMistParticle fireExplosion = new(impactCenter + Main.rand.NextVector2Circular(80f, 80f), Vector2.Zero,
+                                    Main.rand.NextBool() ? WayfinderSymbol.Colors[0] : WayfinderSymbol.Colors[1],
+                                    Color.Gray, Main.rand.NextFloat(0.85f, 1.15f), Main.rand.NextFloat(220f, 250f));
+                                GeneralParticleHandler.SpawnParticle(fireExplosion);
+                            }
+
+
+                            for (int i = 0; i < 70; i++)
+                                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center + Main.rand.NextVector2Circular(150f, 150f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
                         }
-
-                        // Spawn a bunch of light particles.
-                        for (int i = 0; i < 20; i++)
-                        {
-                            Vector2 position = impactCenter + Main.rand.NextVector2Circular(20f, 20f);
-                            var light = new GlowyLightParticle(position, impactCenter.DirectionTo(position) * Main.rand.NextFloat(3f, 5f),
-                                Main.rand.NextBool() ? WayfinderSymbol.Colors[1] : Color.OrangeRed, 60, Main.rand.NextFloat(0.85f, 1.15f), Main.rand.NextFloat(0.95f, 1.05f), true);
-                            GeneralParticleHandler.SpawnParticle(light);
-                        }
-
-                        // Create a fire explosion.
-                        for (int i = 0; i < 30; i++)
-                        {
-                            MediumMistParticle fireExplosion = new(impactCenter + Main.rand.NextVector2Circular(80f, 80f), Vector2.Zero,
-                                Main.rand.NextBool() ? WayfinderSymbol.Colors[0] : WayfinderSymbol.Colors[1],
-                                Color.Gray, Main.rand.NextFloat(0.85f, 1.15f), Main.rand.NextFloat(220f, 250f));
-                            GeneralParticleHandler.SpawnParticle(fireExplosion);
-                        }
-
-
-                        for (int i = 0; i < 70; i++)
-                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(npc.Center + Main.rand.NextVector2Circular(150f, 150f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
 
                         // Spawn crosses/rocks.
                         if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -2720,8 +2733,11 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                     else
                     {
                         Vector2 spearTip = npc.Center + spearRotation.ToRotationVector2() * (120f * 1.5f);
-                        for (int i = 0; i < 100; i++)
-                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(spearTip + Main.rand.NextVector2Circular(50f, 50f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+                        if (!InfernumConfig.Instance.ReducedGraphicsConfig)
+                        {
+                            for (int i = 0; i < 100; i++)
+                                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(spearTip + Main.rand.NextVector2Circular(50f, 50f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+                        }
 
                         spearPosOffset = 0f;
                         spearStatus = (float)DefenderShieldStatus.MarkedForRemoval;
@@ -2734,8 +2750,11 @@ namespace InfernumMode.Content.BehaviorOverrides.BossAIs.ProfanedGuardians
                     if (universalAttackTimer == 1)
                     {
                         Vector2 spawnPosition = new Vector2(exitPosX, exitPosY) + target.Center;
-                        for (int i = 0; i < 100; i++)
-                            ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(spawnPosition + Main.rand.NextVector2Circular(75f, 75f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+                        if (!InfernumConfig.Instance.ReducedGraphicsConfig)
+                        {
+                            for (int i = 0; i < 100; i++)
+                                ModContent.GetInstance<ProfanedLavaMetaball>().CreateParticle(spawnPosition + Main.rand.NextVector2Circular(75f, 75f), Vector2.Zero, Main.rand.NextFloat(52f, 85f));
+                        }
 
                         SoundEngine.PlaySound(InfernumSoundRegistry.ProvidenceBurnSound, target.Center);
                         SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, target.Center);
